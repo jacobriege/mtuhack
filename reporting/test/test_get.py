@@ -42,11 +42,14 @@ print(f"\nMeta ({r.status_code}):", r.json())
 # --- GET /violations/instance/image ---
 r = requests.get(f"{BASE}/instance/image", params={"violationId": vid})
 data = r.json()
-print(f"\nImage ({r.status_code}): violationId={data['violationId']}, image length={len(data['image'])}")
+image_url = data["imageUrl"]
+print(f"\nImage ({r.status_code}): violationId={data['violationId']}, imageUrl={image_url}")
 out_dir = Path(__file__).parent / "output"
 out_dir.mkdir(exist_ok=True)
 out_path = out_dir / f"{vid}.jpg"
-out_path.write_bytes(base64.b64decode(data["image"]))
+img_resp = requests.get(f"http://localhost:8000{image_url}")
+img_resp.raise_for_status()
+out_path.write_bytes(img_resp.content)
 print(f"Saved image to {out_path}")
 
 # --- GET /violations/instance/flag (toggle) ---

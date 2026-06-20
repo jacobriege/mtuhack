@@ -2,14 +2,42 @@ import base64
 import json
 import uuid
 from io import BytesIO
+from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, WebSocket, WebSocketDisconnect
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
 
 from database import get_db
 
 router = APIRouter(prefix="/violations", tags=["violations"])
+
+IMAGES_DIR = Path("violation_images")
+IMAGES_DIR.mkdir(exist_ok=True)
+
+
+class _ConnectionManager:
+    def __init__(self):
+        self._clients: set[WebSocket] = set()
+
+    async def connect(self, ws: WebSocket):
+        await ws.accept()
+        self._clients.add(ws)
+
+    def disconnect(self, ws: WebSocket):
+        self._clients.discard(ws)
+
+    async def broadcast(self, data: dict):
+        dead: set[WebSocket] = set()
+        for ws in self._clients:
+            try:
+                await ws.send_json(data)
+            except Exception:
+                dead.add(ws)
+        self._clients -= dead
+
+
+_manager = _ConnectionManager()
 
 
 # ---------------------------------------------------------------------------
@@ -34,7 +62,7 @@ class ViolationCount(BaseModel):
 
 class ViolationImage(BaseModel):
     violationId: str
-    image: str
+    imageUrl: str
     blackbox: list[int]
     headbox: list[int]
 
@@ -51,8 +79,8 @@ def _row_to_summary(r) -> ViolationSummary:
     return ViolationSummary(violationId=r["violationId"], type=r["type"], timestamp=r["timestamp"])
 
 
-def _apply_sad_emoji(image_b64: str, blackbox: list[int]) -> str:
-    """Replace the blackbox region with a drawn sad emoji face."""
+def _apply_sad_emoji(image_b64: str, blackbox: list[int]) -> bytes:
+    """Return JPEG bytes with the blackbox region replaced by a drawn sad emoji face."""
     img = Image.open(BytesIO(base64.b64decode(image_b64))).convert("RGB")
     draw = ImageDraw.Draw(img)
 
@@ -80,25 +108,45 @@ def _apply_sad_emoji(image_b64: str, blackbox: list[int]) -> str:
 
     out = BytesIO()
     img.save(out, format="JPEG")
-    return base64.b64encode(out.getvalue()).decode()
+    return out.getvalue()
+
+
+def _save_image(vid: str, jpeg_bytes: bytes) -> str:
+    """Write JPEG bytes to disk and return the filename."""
+    filename = f"{vid}.jpg"
+    (IMAGES_DIR / filename).write_bytes(jpeg_bytes)
+    return filename
+
 
 
 # ---------------------------------------------------------------------------
 # Write
 # ---------------------------------------------------------------------------
 
+@router.websocket("/ws")
+async def violations_ws(ws: WebSocket):
+    await _manager.connect(ws)
+    try:
+        while True:
+            await ws.receive_text()  # keep the connection alive; ignore client messages
+    except WebSocketDisconnect:
+        _manager.disconnect(ws)
+
+
 @router.post("", status_code=201)
-def create_violation(payload: ViolationIn):
+async def create_violation(payload: ViolationIn):
     vid = str(uuid.uuid4())
-    image = _apply_sad_emoji(payload.image, payload.blackbox)
+    jpeg_bytes = _apply_sad_emoji(payload.image, payload.blackbox)
+    filename = _save_image(vid, jpeg_bytes)
     db = get_db()
     db.execute(
         "INSERT INTO violations (violationId, type, timestamp, image, blackbox, headbox) VALUES (?,?,?,?,?,?)",
-        (vid, payload.type, payload.timestamp, image,
+        (vid, payload.type, payload.timestamp, filename,
          json.dumps(payload.blackbox), json.dumps(payload.headbox)),
     )
     db.commit()
     db.close()
+    await _manager.broadcast({"violationId": vid, "type": payload.type, "timestamp": payload.timestamp})
     return {"violationId": vid}
 
 
@@ -142,11 +190,18 @@ def get_counts():
 def get_instance_image(violationId: str = Query(...)):
     db = get_db()
     r = db.execute("SELECT * FROM violations WHERE violationId=?", (violationId,)).fetchone()
-    db.close()
     if not r:
+        db.close()
         raise HTTPException(404, "Violation not found")
-    return ViolationImage(violationId=r["violationId"], image=r["image"],
-                          blackbox=json.loads(r["blackbox"]), headbox=json.loads(r["headbox"]))
+    db.execute("UPDATE violations SET read=1 WHERE violationId=?", (violationId,))
+    db.commit()
+    db.close()
+    return ViolationImage(
+        violationId=r["violationId"],
+        imageUrl=f"/violation_images/{r['image']}",
+        blackbox=json.loads(r["blackbox"]),
+        headbox=json.loads(r["headbox"]),
+    )
 
 
 @router.get("/instance/flag")

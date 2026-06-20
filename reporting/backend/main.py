@@ -22,6 +22,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Reporting Backend", lifespan=lifespan)
 app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
+app.mount("/violation_images", StaticFiles(directory="violation_images"), name="violation_images")
 app.include_router(violations_router)
 
 origins = [
