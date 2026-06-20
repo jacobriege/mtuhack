@@ -1,9 +1,26 @@
 <script setup>
+import { ref } from 'vue';
 import VerticalDevider from './VerticalDevider.vue';
 import Container1 from './Container1.vue';
 import MissconductExplorer from './MissconductExplorer.vue';
 import MissconductCounter from './MissconductCounter.vue';
 import MissconductDetailsViewer from './MissconductDetailsViewer.vue';
+
+// currently selected misconduct for details view
+const currentMisconduct = ref(null);
+const currentImageUrl = ref(null);
+
+// function called when something is selected in the misconduct explorer, emits event to load details
+function loadDetails(misconduct) {
+  if(misconduct == null) {
+    currentMisconduct.value = null;
+    currentImageUrl.value = null;
+    return;
+  }
+  currentMisconduct.value = misconduct;
+  console.log("Selected misconduct", misconduct);
+  currentImageUrl.value = misconduct.url;
+}
 </script>
 
 <template>
@@ -14,7 +31,7 @@ import MissconductDetailsViewer from './MissconductDetailsViewer.vue';
     <div class="splitview">
       <div class="leftside">
         <Container1>
-          <MissconductExplorer />
+          <MissconductExplorer @loadDetails="loadDetails" />
         </Container1>
         <Container1>
           <MissconductCounter/>
@@ -23,7 +40,8 @@ import MissconductDetailsViewer from './MissconductDetailsViewer.vue';
       <VerticalDevider />
       <div class="details">
         <Container1>
-          <MissconductDetailsViewer id="https://picsum.phosadfffsdftos/200/300"/>
+          <MissconductDetailsViewer v-if="currentImageUrl" :id="currentImageUrl" />
+          <div v-else class="empty">Select a misconduct to view details</div>
         </Container1>
       </div>
     </div>
@@ -42,8 +60,16 @@ import MissconductDetailsViewer from './MissconductDetailsViewer.vue';
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 400px;
 }
-
+.empty {
+  width: 500px;
+  height: 300px;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  text-align: center;
+}
 .splitview {
   margin-top: 1rem;
   justify-content: center;

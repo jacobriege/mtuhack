@@ -1,20 +1,22 @@
 <script setup>
-import {onMounted,ref} from 'vue';
+import {onMounted,onBeforeMount ,ref} from 'vue';
 
+// LOads the Chart.js library and registers the necessary components for creating a pie chart.
 import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js'
 
 Chart.register(PieController, ArcElement, Legend, Tooltip);
 
 const canvas = ref(null)
-onMounted(() => {
+onMounted(async () => {
+  await initalCountFetch();
   new Chart(canvas.value, {
     type: 'pie',
     data: {
-      labels: ['Test1', 'test2', 'C'],
+      labels: computeLabel(),
       datasets: [
         {
-          data: [30, 50, 20],
-          backgroundColor: ['#42b983', '#ff6384', '#36a2eb']
+          data: getData(),
+          backgroundColor: getColor(),
         }
       ]
     },
@@ -23,6 +25,7 @@ onMounted(() => {
         maintainAspectRatio: false,
         plugins: {
             legend: {
+            color: 'var(--color-text)',
             position: 'right',
             labels: {
                 boxWidth: 12,
@@ -33,6 +36,80 @@ onMounted(() => {
         }
   })
 })
+
+//helper for color of pychart
+function getColor() {
+    if(noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
+        return ['#222222'];
+    }
+    var ret = [];
+    if (noHardhatCount.value > 0) {
+        ret.push('#ff6384');
+    }
+    if (noWesthatCount.value > 0) {
+        ret.push('#42b983');
+    }
+    if (emergencyCount.value > 0) {
+        ret.push('#ff6384');
+    }
+    return ret;
+}
+
+//helper for data of pychart
+function getData() {
+    if(noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
+        return [1];
+    }
+    var ret = [];
+    if (noHardhatCount.value > 0) {
+        ret.push(noHardhatCount.value);
+    }
+    if (noWesthatCount.value > 0) {
+        ret.push(noWesthatCount.value);
+    }
+    if (emergencyCount.value > 0) {
+        ret.push(emergencyCount.value);
+    }
+    return ret;
+}
+
+//helper for label of pychart
+function computeLabel() {
+    if (noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
+        return ['No missconducts'];
+    }
+    var ret = [];
+    if (noHardhatCount.value > 0) {
+        ret.push(`Missing Hardhat: ${noHardhatCount.value}`);
+    }
+    if (noWesthatCount.value > 0) {
+        ret.push(`No Safety Vest: ${noWesthatCount.value}`);
+    }
+    if (emergencyCount.value > 0) {
+        ret.push(`Emergency: ${emergencyCount.value}`);
+    }
+    return ret;
+}
+
+// Variables of miscnduct. Trigger update of the pie chart when they change.
+const noHardhatCount = ref(0);
+const noWesthatCount = ref(0);
+const emergencyCount = ref(0);
+
+// Gets the count of missconducts for the last 7 days from the backend when initally loading the component
+const initalCountFetch = async () => {
+  const response = await fetch('http://localhost:8000/violations/count');
+  const data = await response.json();
+  for (const item of data) {
+    if (item.type === 'no_hardhat') {
+      noHardhatCount.value = item.count;
+    } else if (item.type === 'no_safety_vest') {
+      noWesthatCount.value = item.count;
+    } else if (item.type === 'emergency') {
+      emergencyCount.value = item.count;
+    }
+  }
+}
 
 </script>
 
@@ -47,60 +124,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.missconduct-explorer {
-  display: flex;
-  flex-direction: column;
-}
+
 .pie-node {
   margin-top: 1rem;
   width: 100%;
   height: 180px;
 }
 
-.filter {
-  display: flex;
-  padding: 0.3rem;
-  place-items: center;
-  gap: 0.4rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-}
 .title {
   font-size: 1.2rem;
   font-weight: 500;
   color: var(--color-heading);
 
-}
-.missconducts-types {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.missconduct {
-  border-radius: 8px;
-  padding: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--primary);
-}
-.missconduct:active {
-  background-color: var(--primary-hover);
-  border: 1px solid var(--color-border);
-}
-
-.topline {
-  padding: 0.5rem;
-  padding-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.filter {
-  display: flex;
-  place-items: center;
-  gap: 0.4rem;
 }
 
 
