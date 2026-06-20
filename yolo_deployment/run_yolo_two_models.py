@@ -1,8 +1,8 @@
 from yolo_utils_two_models import *
 from ultralytics import YOLO
 
-path_to_ppe_model = '/home/matthias/Desktop/mtuhack/yolo_stuff/01_models/ppe_yolo26n.pt'
-path_to_face_model = '/home/matthias/Desktop/mtuhack/yolo_stuff/01_models/face_detection_yolo11n.pt'
+path_to_ppe_model = '/home/matthias/Desktop/mtuhack/yolo_deployment/ppe_yolo26n_ncnn_model'
+path_to_face_model = '/home/matthias/Desktop/mtuhack/yolo_deployment/best_head_ncnn_model'
 #path_to_head_model = ''
 
 ppe_model = YOLO(path_to_ppe_model)

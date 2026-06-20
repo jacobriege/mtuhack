@@ -299,7 +299,7 @@ def analyze_frame(
                 cls_id = int(box.cls[0])
 
                 if isinstance(face_model.names, dict):
-                    label = face_model.names.get(cls_id, "face")
+                    label = face_model.names.get(cls_id, "Head")
                 else:
                     label = face_model.names[cls_id]
 
