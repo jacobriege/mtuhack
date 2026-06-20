@@ -1,33 +1,67 @@
-# mtuhack
-MTU Hackathon Team 1
+# Science Hackathon 2026 - MTU Team 1
 
+> **AI-Based "Wingman" for Detecting PPE Violation and Emergency Situations**
 
-# Hardware
+---
 
-## Raspberry PI
+## Problem
 
-### Zugangsdaten
+Factory floors require workers to wear personal protective equipment (PPE) — hardhats and safety vests — at all times. Also Workers who fall or are incapacitated may go unnoticed for critical minutes.
 
-Username: mtu1
-Password: wingman_mtu1!
+## Solution
 
-### Raspberry
+An automated, real-time safety monitoring system that uses computer vision on a rover to patrol a factory floor and detect PPE violations and workers in emergency situations. Violations are anonymized and sent to a central backend, where supervisors can review them through a dashboard.
 
-SSID: TP-Link_4690_5G
-PW: 50354559
+---
 
+## Implementation
 
-# Reporting
+### Architecture Overview
 
-## Backend
+![overview diagram of the project](docs/images/stack.drawio.png)
 
-Start:
+## How to Run
 
+See [Access File](ACCESS.md) for working credentials. Run the Backend/Frontend first, after that run the detection.
+
+### Requirements
+
+Create fresh Environment:
+
+```bash
+python3 -m venv .venv
+```
+
+Install Requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Backend
+
+```bash
+cd reporting/backend
 .venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
+See [Reporting Docs](reporting/README.md) for further Information.
 
-Types:
+## Frontend
 
-no_hardhat
-no_west
-no_standup
+```bash
+
+```
+
+See [Reporting Docs](reporting/README.md) for further Information.
+
+### Edge (Raspberry Pi)
+
+```bash
+python ppe_and_faces.py
+```
+
+## Further Resources
+
+- [Miro Board](https://miro.com/app/board/uXjVHDxGl7M=/?share_link_id=916344599581)
+- [Presentation]()
