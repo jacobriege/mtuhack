@@ -10,7 +10,7 @@ import MissconductDetailsViewer from './MissconductDetailsViewer.vue';
 const currentMisconduct = ref(null);
 const currentImageUrl = ref(null);
 
-// function called when something is selected in the misconduct explorer, emits event to load details
+// Updates the selected misconduct state and image URL for the details panel.
 function loadDetails(misconduct) {
   if(misconduct == null) {
     currentMisconduct.value = null;

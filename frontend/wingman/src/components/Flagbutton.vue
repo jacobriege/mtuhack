@@ -1,6 +1,7 @@
 <script setup>
 import Button1 from './button1.vue';
 
+// Placeholder action for a future misconduct flagging workflow.
 function flagMisconduct() {
   alert('Misconduct flagged!');
 }

@@ -12,6 +12,7 @@ const imageUrl = ref(null);
 const status = ref('idle');
 let objectUrl = null;
 
+// Releases any previously created object URL and resets the current image.
 const clearImage = () => {
   if (objectUrl) {
     URL.revokeObjectURL(objectUrl);
@@ -20,6 +21,7 @@ const clearImage = () => {
   imageUrl.value = null;
 };
 
+// Loads misconduct image data from a URL and prepares it for display.
 const loadImage = async (id) => {
   clearImage();
   if (id == null || id === '') {

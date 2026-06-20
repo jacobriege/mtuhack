@@ -7,14 +7,17 @@ const startTime = ref('')
 const endTime = ref('')
 const flaggedOnly = ref(false)
 
+// Opens the filter modal.
 const openPopup = () => {
   showPopup.value = true
 }
 
+// Closes the filter modal.
 const closePopup = () => {
   showPopup.value = false
 }
 
+// Emits current filter values to the parent and closes the modal.
 const applyFilters = () => {
   emit('applyFilters', {
     startTime: startTime.value,
@@ -24,6 +27,7 @@ const applyFilters = () => {
   closePopup()
 }
 
+// Resets all filter inputs to their default values.
 const resetFilters = () => {
   startTime.value = ''
   endTime.value = ''
