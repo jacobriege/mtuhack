@@ -1,0 +1,12 @@
+# Python related stuff
+__pycache__
+
+# directories
+construction-ppe
+test_images
+result_images
+models
+
+# files
+*.pt
+*.jpeg
