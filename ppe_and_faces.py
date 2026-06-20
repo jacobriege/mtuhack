@@ -9,9 +9,6 @@ import json
 import websocket
 
 # ---------- Raspberry Pi settings ----------
-BACKEND_WS_URL = "ws://192.168.178.50:8000/ws/pi/pi-cam-1"
-STREAM_TOKEN = "replace-this-with-a-long-random-secret"
-
 SEND_FPS = 5                 # Network stream rate
 JPEG_QUALITY = 75
 SHOW_LOCAL_WINDOW = False    # True only when a Pi display is connected
