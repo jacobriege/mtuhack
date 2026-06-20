@@ -2,12 +2,12 @@
 
 Brief predicted behavior of main frontend functions in `src/components`.
 
-## `MissconductInspector.vue`
+## Inspector component (`MissconductInspector.vue`)
 
 - `loadDetails(misconduct)`  
   Stores the selected misconduct object and image URL for the details viewer.
 
-## `MissconductExplorer.vue`
+## Explorer component (`MissconductExplorer.vue`)
 
 - `loadDetails(misconduct)`  
   Emits selected misconduct to the parent.
@@ -35,14 +35,14 @@ Brief predicted behavior of main frontend functions in `src/components`.
 - `resetFilters()`  
   Clears all filter inputs to defaults.
 
-## `MissconductDetailsViewer.vue`
+## Details viewer component (`MissconductDetailsViewer.vue`)
 
 - `clearImage()`  
   Revokes old object URLs and clears image state.
 - `loadImage(id)`  
   Fetches image data from the selected URL and updates display status.
 
-## `MissconductCounter.vue`
+## Counter component (`MissconductCounter.vue`)
 
 - `getColor()`  
   Selects pie chart colors for available categories.

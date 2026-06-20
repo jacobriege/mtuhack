@@ -13,11 +13,11 @@ This folder contains the frontend client project for the MTUHack system.
 ## Runtime flow
 
 1. `main.js` boots the app.
-2. `App.vue` renders `MissconductInspector`.
-3. `MissconductInspector` coordinates:
-   - `MissconductExplorer` (list + filters + selection),
-   - `MissconductCounter` (summary pie chart),
-   - `MissconductDetailsViewer` (selected image preview).
+2. `App.vue` renders the inspector component (`MissconductInspector.vue`).
+3. The inspector coordinates:
+   - explorer (`MissconductExplorer.vue`) for list, filters, and selection,
+   - counter (`MissconductCounter.vue`) for the summary pie chart,
+   - details viewer (`MissconductDetailsViewer.vue`) for selected image preview.
 
 ## API usage in current frontend
 

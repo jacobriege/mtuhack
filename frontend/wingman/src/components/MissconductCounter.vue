@@ -76,7 +76,7 @@ function getData() {
 // Builds labels that combine category names and their counts.
 function computeLabel() {
     if (noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
-        return ['No missconducts'];
+        return ['No misconducts'];
     }
     var ret = [];
     if (noHardhatCount.value > 0) {
