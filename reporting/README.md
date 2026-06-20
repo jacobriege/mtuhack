@@ -4,7 +4,7 @@
 
 - `no_hardhat`
 - `no_west`
-- `no_standup`
+- `emergency`
 
 ## Frontend
 
