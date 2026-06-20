@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -23,6 +24,17 @@ app = FastAPI(title="Reporting Backend", lifespan=lifespan)
 app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
 app.include_router(violations_router)
 
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/reports", response_model=ReportOut, status_code=201)
 def ingest_report(payload: ReportIn):

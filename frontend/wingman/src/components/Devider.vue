@@ -6,9 +6,11 @@
 <style scoped>
 .divider {
   border: none;
-  height: 1px;
-  width: 90%;
-  background: var(--vt-c-divider-light-1);
+  height: 3px;
+  background: var(--secondary);
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 1rem;
   margin: 16px 0;
 }
 </style>
