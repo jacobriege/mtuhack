@@ -25,15 +25,22 @@ def init_db() -> None:
         );
 
         CREATE TABLE IF NOT EXISTS violations (
-            violationId TEXT PRIMARY KEY,
-            type        TEXT NOT NULL,
-            timestamp   INTEGER NOT NULL,
-            flagged     INTEGER NOT NULL DEFAULT 0,
-            read        INTEGER NOT NULL DEFAULT 0,
-            image       TEXT NOT NULL,
-            blackbox    TEXT NOT NULL,
-            headbox     TEXT NOT NULL
+            violationId    TEXT PRIMARY KEY,
+            type           TEXT NOT NULL,
+            timestamp      INTEGER NOT NULL,
+            flagged        INTEGER NOT NULL DEFAULT 0,
+            read           INTEGER NOT NULL DEFAULT 0,
+            image          TEXT NOT NULL,
+            blackbox       TEXT NOT NULL,
+            headbox        TEXT NOT NULL,
+            face_detected  INTEGER          -- NULL=pending, 0=clean, 1=face visible
         );
     """)
+    # Migration: add face_detected to existing databases that pre-date this column.
+    try:
+        conn.execute("ALTER TABLE violations ADD COLUMN face_detected INTEGER")
+        conn.commit()
+    except Exception:
+        pass  # column already exists
     conn.commit()
     conn.close()

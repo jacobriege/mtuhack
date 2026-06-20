@@ -4,9 +4,13 @@ import uuid
 from io import BytesIO
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Query, WebSocket, WebSocketDisconnect
+import cv2
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, WebSocket, WebSocketDisconnect
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
+
+_YUNET_MODEL = Path(__file__).parent / "face_detection_yunet.onnx"
+
 
 from database import get_db
 
@@ -118,6 +122,22 @@ def _save_image(vid: str, jpeg_bytes: bytes) -> str:
     return filename
 
 
+def _check_face_in_image(vid: str, image_path: Path) -> None:
+    """Background task: use YuNet DNN detector to check for visible faces."""
+    img = cv2.imread(str(image_path))
+    if img is None:
+        return
+    h, w = img.shape[:2]
+    detector = cv2.FaceDetectorYN.create(str(_YUNET_MODEL), "", (w, h), score_threshold=0.6)
+    _, faces = detector.detect(img)
+    face_detected = 1 if (faces is not None and len(faces) > 0) else 0
+    db = get_db()
+    db.execute(
+        "UPDATE violations SET face_detected=? WHERE violationId=?", (face_detected, vid)
+    )
+    db.commit()
+    db.close()
+
 
 # ---------------------------------------------------------------------------
 # Write
@@ -134,7 +154,7 @@ async def violations_ws(ws: WebSocket):
 
 
 @router.post("", status_code=201)
-async def create_violation(payload: ViolationIn):
+async def create_violation(payload: ViolationIn, background_tasks: BackgroundTasks):
     vid = str(uuid.uuid4())
     jpeg_bytes = _apply_sad_emoji(payload.image, payload.blackbox)
     filename = _save_image(vid, jpeg_bytes)
@@ -146,6 +166,7 @@ async def create_violation(payload: ViolationIn):
     )
     db.commit()
     db.close()
+    background_tasks.add_task(_check_face_in_image, vid, IMAGES_DIR / filename)
     await _manager.broadcast({"violationId": vid, "type": payload.type, "timestamp": payload.timestamp})
     return {"violationId": vid}
 
