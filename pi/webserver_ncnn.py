@@ -50,18 +50,28 @@ JPEG_QUALITY = 60
 
 # PPE model class IDs:
 # 0 = Hardhat, 5 = Person, 7 = Safety Vest
-PPE_CLASSES = [0, 5, 7]
+PPE_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7]
 
 PPE_LABELS = {
-    0: "helmet",
+    0: "hardhat",
+    1: "mask",
+    2: "no-hardhat",
+    3: "no-mask",
+    4: "no-safety-vest",
     5: "person",
-    7: "vest",
+    6: "safety-cone",
+    7: "safety-vest",
 }
 
 COLORS = {
+    "hardhat": (0, 165, 255),
+    "mask": (255, 255, 0),
+    "no-hardhat": (0, 0, 255),
+    "no-mask": (0, 0, 180),
+    "no-safety-vest": (0, 0, 255),
     "person": (0, 220, 0),
-    "helmet": (0, 165, 255),
-    "vest": (255, 180, 0),
+    "safety-cone": (0, 140, 255),
+    "safety-vest": (255, 180, 0),
     "face": (255, 0, 255),
 }
 
