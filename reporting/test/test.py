@@ -8,7 +8,7 @@ payload = {
     "type": "no_hardhat",
     "timestamp": 1718900000,
     "image": image_b64,
-    "blackbox": [0, 0, 100, 100],
+    "blackbox": [521, 225, 889, 987],
     "headbox": [20, 10, 80, 50],
 }
 
