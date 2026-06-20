@@ -18,7 +18,7 @@ An automated, real-time safety monitoring system that uses computer vision on a 
 
 ### Architecture Overview
 
-![overview diagram of the project](docs/images/stack.drawio.png)
+![overview diagram of the project](docs/images/arch_diagram.png)
 
 ## How to Run
 
@@ -60,6 +60,8 @@ See [Reporting Docs](reporting/README.md) for further Information.
 ```bash
 python ppe_and_faces.py
 ```
+
+Once a Violation or Emergency has been detected, the script will transmit these events to the backend for further processing.
 
 ## Further Resources
 
