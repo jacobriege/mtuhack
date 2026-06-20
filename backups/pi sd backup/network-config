@@ -1,0 +1,15 @@
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp6: true
+      optional: true
+  wifis:
+    wlan0:
+      dhcp4: true
+      regulatory-domain: "DE"
+      access-points:
+        "Hotspot1":
+          password: "6c7299e4b01c1e7f4e827a9ff8c3dac0155e8f18c27e5f45aa4f887ff1d42ece"
+      optional: true
