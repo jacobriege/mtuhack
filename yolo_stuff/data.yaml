@@ -1,4 +1,4 @@
-path: combined_dataset
+path: combined_datasets
 
 train: images/train
 val: images/val
