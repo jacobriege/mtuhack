@@ -24,3 +24,10 @@ PW: 50354559
 Start:
 
 .venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
+Types:
+
+no_hardhat
+no_west
+no_standup
