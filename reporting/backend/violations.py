@@ -3,13 +3,37 @@ import json
 import uuid
 from io import BytesIO
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, WebSocket, WebSocketDisconnect
 from PIL import Image, ImageDraw
 from pydantic import BaseModel
 
 from database import get_db
 
 router = APIRouter(prefix="/violations", tags=["violations"])
+
+
+class _ConnectionManager:
+    def __init__(self):
+        self._clients: set[WebSocket] = set()
+
+    async def connect(self, ws: WebSocket):
+        await ws.accept()
+        self._clients.add(ws)
+
+    def disconnect(self, ws: WebSocket):
+        self._clients.discard(ws)
+
+    async def broadcast(self, data: dict):
+        dead: set[WebSocket] = set()
+        for ws in self._clients:
+            try:
+                await ws.send_json(data)
+            except Exception:
+                dead.add(ws)
+        self._clients -= dead
+
+
+_manager = _ConnectionManager()
 
 
 # ---------------------------------------------------------------------------
@@ -87,8 +111,18 @@ def _apply_sad_emoji(image_b64: str, blackbox: list[int]) -> str:
 # Write
 # ---------------------------------------------------------------------------
 
+@router.websocket("/ws")
+async def violations_ws(ws: WebSocket):
+    await _manager.connect(ws)
+    try:
+        while True:
+            await ws.receive_text()  # keep the connection alive; ignore client messages
+    except WebSocketDisconnect:
+        _manager.disconnect(ws)
+
+
 @router.post("", status_code=201)
-def create_violation(payload: ViolationIn):
+async def create_violation(payload: ViolationIn):
     vid = str(uuid.uuid4())
     image = _apply_sad_emoji(payload.image, payload.blackbox)
     db = get_db()
@@ -99,6 +133,7 @@ def create_violation(payload: ViolationIn):
     )
     db.commit()
     db.close()
+    await _manager.broadcast({"violationId": vid, "type": payload.type, "timestamp": payload.timestamp})
     return {"violationId": vid}
 
 
@@ -142,9 +177,12 @@ def get_counts():
 def get_instance_image(violationId: str = Query(...)):
     db = get_db()
     r = db.execute("SELECT * FROM violations WHERE violationId=?", (violationId,)).fetchone()
-    db.close()
     if not r:
+        db.close()
         raise HTTPException(404, "Violation not found")
+    db.execute("UPDATE violations SET read=1 WHERE violationId=?", (violationId,))
+    db.commit()
+    db.close()
     return ViolationImage(violationId=r["violationId"], image=r["image"],
                           blackbox=json.loads(r["blackbox"]), headbox=json.loads(r["headbox"]))
 
