@@ -44,7 +44,7 @@ for i, (ts, vtype) in enumerate(events):
         "blackbox": blackbox,
         "headbox": headbox,
     }
-    resp = requests.post("http://localhost:8000/violations", json=payload)
+    resp = requests.post("http://localhost:5000/violations", json=payload)
     print(f"[{i + 1:>2}/{len(events)}] type={vtype:<12} ts={ts}  -> {resp.status_code} {resp.json()}")
 
 print("Done.")

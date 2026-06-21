@@ -1,7 +1,7 @@
 # ~/ppe-pi/pi_ppe_face_web_fast.py
 #
 # Local WLAN stream:
-# http://RASPBERRY_PI_IP:8000
+# http://RASPBERRY_PI_IP:5000
 #
 # Required local NCNN model folders:
 # ~/ppe-pi/models/ppe_yolo26n_ncnn_model/
@@ -597,11 +597,11 @@ if __name__ == "__main__":
     )
     worker.start()
 
-    print("Web server running on port 8000.")
+    print("Web server running on port 5000.")
 
     app.run(
         host="0.0.0.0",
-        port=8000,
+        port=5000,
         threaded=True,
         debug=False,
         use_reloader=False,

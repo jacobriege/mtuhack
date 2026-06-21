@@ -108,7 +108,7 @@ const emergencyCount = ref(0);
 
 // Gets the count of missconducts for the last 7 days from the backend when initally loading the component
 const fetchCount = async () => {
-  const response = await fetch('http://localhost:8000/violations/count');
+  const response = await fetch('http://localhost:5000/violations/count');
   const data = await response.json();
   for (const item of data) {
     if (item.type === 'no_hardhat') {

@@ -5,7 +5,7 @@ let socket = null
 
 const onmount = (data) => {
   console.log('Connecting to WebSocket...')
-  socket = new WebSocket('ws://localhost:8000/violations/ws')
+  socket = new WebSocket('ws://localhost:5000/violations/ws')
 
   socket.onopen = () => {
     console.log('Connected')

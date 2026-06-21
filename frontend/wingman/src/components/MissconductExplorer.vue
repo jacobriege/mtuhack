@@ -28,7 +28,7 @@ async function fetchMissconducts(filters) {
   const st = filters.startTime == "" ? 0 : Math.floor(new Date(filters.startTime) / 1000)
   const et = filters.endTime == "" ? Math.floor(new Date().getTime() / 1000) : Math.floor(new Date(filters.endTime) / 1000)
     
-  const response = await fetch('http://localhost:8000/violations/bydate?startdate=' + st + '&enddate=' + et + (filters.flagged ? '&flagged=true' : '') + ( filters.read ? '&unread=true' : ''))
+  const response = await fetch('http://localhost:5000/violations/bydate?startdate=' + st + '&enddate=' + et + (filters.flagged ? '&flagged=true' : '') + ( filters.read ? '&unread=true' : ''))
   
   const datajson = await response.json()
   if (!response.ok) {

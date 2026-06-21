@@ -15,7 +15,7 @@ defineProps({
 
 
 async function flagMisconduct() {
-  const response = await fetch(`http://localhost:8000/violations/instance/flag?set=${!props.flagged}&violationId=${props.violationId}`)
+  const response = await fetch(`http://localhost:5000/violations/instance/flag?set=${!props.flagged}&violationId=${props.violationId}`)
   if (!response.ok) {
     throw new Error(`Flag request failed: ${response.status}`);
   }

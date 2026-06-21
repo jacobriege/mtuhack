@@ -17,7 +17,7 @@ function toggleLiveView() {
 
 // global vairable missconducts
 const data = ref({
-  updatecounter: 0
+  updatecounter: 0,
 })
 onBeforeMount(() => {
   provide('data', data)
@@ -34,12 +34,12 @@ onUnmounted(() => {ws.onunmount();})
 
 // helper fucntion for fetching instance details
 const fetchImageUrl = async (id) => {
-  const response = await fetch("http://localhost:8000/violations/instance/image?violationId=" + id)
+  const response = await fetch("http://localhost:5000/violations/instance/image?violationId=" + id)
   if (!response.ok) {
     throw new Error(`Image URL request failed: ${response.status}`);
   }
   const data = await response.json();
-  currentImageUrl.value = "http://localhost:8000" + data.imageUrl;
+  currentImageUrl.value = "http://localhost:5000" + data.imageUrl;
 };
 
 // function called when something is selected in the misconduct explorer, emits event to load details

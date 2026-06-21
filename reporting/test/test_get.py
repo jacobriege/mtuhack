@@ -1,7 +1,7 @@
 import requests
 import time
 
-BASE = "http://localhost:8000/violations"
+BASE = "http://localhost:5000/violations"
 
 # --- create a violation first so there's something to query ---
 import base64
@@ -25,11 +25,11 @@ r = requests.get(f"{BASE}/unread")
 print(f"\nUnread ({r.status_code}):", r.json())
 
 # --- GET /violations/bydate ---
-r = requests.get(f"{BASE}/bydate", params={"startdate": 1718800000, "enddate": 1719000000})
+r = requests.get(f"{BASE}/bydate", params={"startdate": 1718500000, "enddate": 1719000000})
 print(f"\nBy date ({r.status_code}):", r.json())
 
 # --- GET /violations/bydate?flagged=false ---
-r = requests.get(f"{BASE}/bydate", params={"startdate": 1718800000, "enddate": 1719000000, "flagged": "false"})
+r = requests.get(f"{BASE}/bydate", params={"startdate": 1718500000, "enddate": 1719000000, "flagged": "false"})
 print(f"\nBy date unflagged ({r.status_code}):", r.json())
 
 # --- GET /violations/count ---
@@ -48,7 +48,7 @@ print(f"\nImage ({r.status_code}): violationId={data['violationId']}, imageUrl={
 out_dir = Path(__file__).parent / "output"
 out_dir.mkdir(exist_ok=True)
 out_path = out_dir / f"{vid}.jpg"
-img_resp = requests.get(f"http://localhost:8000{image_url}")
+img_resp = requests.get(f"http://localhost:5000{image_url}")
 img_resp.raise_for_status()
 out_path.write_bytes(img_resp.content)
 print(f"Saved image to {out_path}")
