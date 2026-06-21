@@ -57,3 +57,11 @@ Brief predicted behavior of main frontend functions in `src/components`.
 
 - `flagMisconduct()`  
   Placeholder action that currently shows an alert.
+
+## Components without script functions
+
+- `Container1.vue` — layout container wrapper using slot content.
+- `button1.vue` — stylized button-like slot wrapper.
+- `Devider.vue` — horizontal divider UI element.
+- `VerticalDevider.vue` — vertical divider UI element.
+- `MisconductTimeline.vue` — currently empty placeholder component.
