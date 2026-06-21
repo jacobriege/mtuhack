@@ -1,46 +1,48 @@
 <script setup>
-import { onMounted, ref , watch} from 'vue'
+import { onMounted, ref, inject, watch} from 'vue'
 import Devider from './Devider.vue'
 import Filter from './Filter.vue'
 
 const emit = defineEmits(['loadDetails'])
 
 const loadDetails = (misconduct) => {
-  
+  currentMisconduct.value = misconduct;
+  console.log("Current misconduct set to", misconduct)
   emit('loadDetails', misconduct)
 }
+const currentMisconduct = ref(null);
 const newtotalcount = ref(0)
-const missconducts = ref([])
+const missconducts = ref([]) //set via watch to trigger reactivity
+const data = inject('data')
 
 
+const activeFilters = ref({ startTime: "", endTime: "", flagged: false, read: false })
 
-const activeFilters = ref({ startTime: "", endTime: "", flagged: false })
-
+// Onmount run inital fetch
 onMounted(async () => {
   await fetchMissconducts(activeFilters.value)
 })
 
+//function to fetch missconduct from server (filtered)
 async function fetchMissconducts(filters) {
-  var response;
-  if(filters.startTime == "" && filters.endTime == "" && filters.flagged == false) {
-    response = await fetch('http://localhost:8000/violations/unread')
-  } else {
-    const st = filters.startTime == "" ? 0 : Math.floor(new Date(filters.startTime) / 1000)
-    const et = filters.endTime == "" ? Math.floor(new Date().getTime() / 1000) : Math.floor(new Date(filters.endTime) / 1000)
+  const st = filters.startTime == "" ? 0 : Math.floor(new Date(filters.startTime) / 1000)
+  const et = filters.endTime == "" ? Math.floor(new Date().getTime() / 1000) : Math.floor(new Date(filters.endTime) / 1000)
     
-    response = await fetch('http://localhost:8000/violations/bydate?startdate=' + st + '&enddate=' + et + (filters.flagged ? '&flagged=true' : ''))
-  }
-  const data = await response.json()
+  const response = await fetch('http://localhost:8000/violations/bydate?startdate=' + st + '&enddate=' + et + (filters.flagged ? '&flagged=true' : '') + ( filters.read ? '&unread=true' : ''))
+  
+  const datajson = await response.json()
   if (!response.ok) {
     missconducts.value = []
-    console.error('Failed to fetch missconducts', data);
+    console.error('Failed to fetch missconducts', datajson);
     return;
   }
-  console.log(data)
-  missconducts.value = data
+  console.log('Fetched missconducts', datajson);
+  missconducts.value = sortByTime(datajson)
 }
 
-
+const sortByTime = (arr) => {
+  return arr.sort((a, b) => b.timestamp - a.timestamp);
+};
 
 
 const onApplyFilters = (filters) => {
@@ -58,22 +60,20 @@ function getFilterText() {
     const f = `${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     return f
   };
-  if(activeFilters.value.startTime != "" || activeFilters.value.endTime != "") {
-    if(activeFilters.value.flagged == true) {
-      return `${prettyfydatetime(activeFilters.value.startTime)} - ${prettyfydatetime(activeFilters.value.endTime,replace="now")} • flagged`
-    } else {
-      return `${prettyfydatetime(activeFilters.value.startTime)} - ${prettyfydatetime(activeFilters.value.endTime)}`
-    }
-  } else {
-    return "latest"
-  }
-}
 
+  const readprefix = activeFilters.value.read ? "unread " : ""
+  if(activeFilters.value.flagged == true) {
+    return `${readprefix}${prettyfydatetime(activeFilters.value.startTime)} until ${prettyfydatetime(activeFilters.value.endTime,"now")} + flagged`
+  } else {
+    return `${readprefix}${prettyfydatetime(activeFilters.value.startTime)} until ${prettyfydatetime(activeFilters.value.endTime,"now")}`
+  }
+
+}
 // display helper
 function showtype(misconduct) {
   if(misconduct.type == "no_hardhat") {
     return "Missing Hardhat"
-  } else if(misconduct.type == "no_safety_vest") {
+  } else if(misconduct.type == "no_west") {
     return "No Safety Vest"
   } else if(misconduct.type == "emergency") {
     return "Emergency lying down"
@@ -84,14 +84,14 @@ function showtype(misconduct) {
 
 //helper for date
 function prettyDate(misconduct) {
-  const d = new Date(misconduct.timestamp);
+  const d = new Date(misconduct.timestamp*1000);
   console.log(d)
   return `${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
 }
 
 //helper for time
 function prettyTime(misconduct) {
-  const d = new Date(misconduct.timestamp);
+  const d = new Date(misconduct.timestamp*1000);
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
@@ -100,12 +100,18 @@ watch(missconducts, (newVal) => {
   newtotalcount.value = newVal.length
 })
 
+//watch for changes to update details view
 watch(missconducts, (newVal) => {
+  missconducts.value = newVal
   if(newVal.length > 0) {
     loadDetails(newVal[0])
   } else {
     loadDetails(null)
   }
+})
+
+watch(() => data.value.updatecounter, async (newVal) => {
+  await fetchMissconducts(activeFilters.value)
 })
 
 </script>
@@ -114,7 +120,7 @@ watch(missconducts, (newVal) => {
   <div class="missconduct-explorer">
     <div class="topline">
       <div>
-        <div class="title">{{ newtotalcount }} Missconducts</div>
+        <div class="title">{{ newtotalcount }} Events</div>
         <div class="filterdisplay">
           {{ getFilterText() }}
         </div>
@@ -126,7 +132,7 @@ watch(missconducts, (newVal) => {
 
       <transition-group name="fade-slide" tag="div" class="missconducts" appear>
         <div v-if="missconducts.length === 0" class="empty">No new missconducts detected</div>
-        <div v-else v-for="missconduct in missconducts" :key="missconduct.id" class="missconduct" @click="loadDetails(missconduct)">
+        <div v-else v-for="missconduct in missconducts" :key="missconduct.violationId" :class="['missconduct', { active: currentMisconduct && currentMisconduct.violationId === missconduct.violationId }]"  @click="loadDetails(missconduct)">
           <div class="type">{{ showtype(missconduct) }}</div>
           <div class="details">
             <div class="time">{{ prettyTime(missconduct) }}</div>
@@ -173,7 +179,13 @@ watch(missconducts, (newVal) => {
   background-color: var(--primary);
   transform: translateY(0);
   opacity: 1;
-  transition: transform 220ms ease, opacity 220ms ease;
+  transition: transform 220ms ease, opacity 220ms ease, color 220ms ease, background-color 220ms ease;
+}
+
+.missconduct.active {
+  background-color: var(--secondary);
+  outline: 1px solid var(--color-border);
+  color: var(--color-background)
 }
 .fade-slide-enter-from,
 .fade-slide-appear-from,
@@ -188,7 +200,7 @@ watch(missconducts, (newVal) => {
 }
 .missconduct:active {
   background-color: var(--primary-hover);
-  border: 1px solid var(--color-border);
+  transform: scale(0.98);
 }
 
 .topline {

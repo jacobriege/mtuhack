@@ -1,9 +1,8 @@
 # wingman
+
 # instruction on running
-Go to ./frontend/wingman 
-Run "npm run dev"
-should open at localhost (5173)
-(if not make sure npm and node is installed)
+cd ./frontend/wingman 
+"npm run dev"
 
 
 

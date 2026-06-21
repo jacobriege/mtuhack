@@ -1,4 +1,5 @@
 import requests
+import time
 
 BASE = "http://localhost:8000/violations"
 
@@ -10,7 +11,7 @@ image_b64 = base64.b64encode(Path(__file__).parent.joinpath("obama.jpg").read_by
 
 resp = requests.post(BASE, json={
     "type": "no_hardhat",
-    "timestamp": 1718900000,
+    "timestamp": int(time.time()),
     "image": image_b64,
     "blackbox": [521, 225, 889, 987],
     "headbox": [20, 10, 80, 50],

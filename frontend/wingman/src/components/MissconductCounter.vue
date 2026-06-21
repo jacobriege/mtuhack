@@ -1,5 +1,15 @@
 <script setup>
-import {onMounted,onBeforeMount ,ref} from 'vue';
+import {onMounted,inject ,ref,watch} from 'vue';
+
+const data = inject('data')
+
+watch(data.value.updatecounter, () => {
+  // trigger update of the pie chart when the data changes
+  fetchCount();
+}, { deep: true })
+
+
+
 
 // LOads the Chart.js library and registers the necessary components for creating a pie chart.
 import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js'
@@ -8,7 +18,7 @@ Chart.register(PieController, ArcElement, Legend, Tooltip);
 
 const canvas = ref(null)
 onMounted(async () => {
-  await initalCountFetch();
+  await fetchCount();
   new Chart(canvas.value, {
     type: 'pie',
     data: {
@@ -44,7 +54,7 @@ function getColor() {
     }
     var ret = [];
     if (noHardhatCount.value > 0) {
-        ret.push('#ff6384');
+        ret.push('#4764e8');
     }
     if (noWesthatCount.value > 0) {
         ret.push('#42b983');
@@ -97,19 +107,24 @@ const noWesthatCount = ref(0);
 const emergencyCount = ref(0);
 
 // Gets the count of missconducts for the last 7 days from the backend when initally loading the component
-const initalCountFetch = async () => {
+const fetchCount = async () => {
   const response = await fetch('http://localhost:8000/violations/count');
   const data = await response.json();
   for (const item of data) {
     if (item.type === 'no_hardhat') {
       noHardhatCount.value = item.count;
-    } else if (item.type === 'no_safety_vest') {
+    } else if (item.type === 'no_west') {
       noWesthatCount.value = item.count;
     } else if (item.type === 'emergency') {
       emergencyCount.value = item.count;
     }
   }
 }
+
+// update on incomming change
+watch(() => data.value.updatecounter, async (newVal) => {
+  await fetchCount()
+})
 
 </script>
 

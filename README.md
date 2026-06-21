@@ -41,8 +41,13 @@ pip install -r requirements.txt
 ### Backend
 
 ```bash
+On Linux:
 cd reporting/backend
 .venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+On Windows:
+cd reporting/backend
+.\.venv\Scripts\uvicorn.exe main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 See [Reporting Docs](reporting/README.md) for further Information.
