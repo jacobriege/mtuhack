@@ -1,21 +1,18 @@
 <script setup>
-import {defineProps, defineEmits} from 'vue';
-const props = defineProps({
-    active: {
-        type: Boolean,
-        default: false,
-    }
-})
+import { defineEmits} from 'vue';
+
+function openlink() {
+  // change live ip here
+  window.open("http://localhost:8000/liveview", "_blank");
+}
 const emit = defineEmits(['click'])
 </script>
 <template>
-	<button class="live-button" type="button" @click="emit('click')">
-		<div v-if="props.active">
+	<button class="live-button" type="button" @click=openlink>
+		<div>
 			Go LIVE
 		</div>
-        <div v-else>
-            Go Back
-        </div>
+
 
 	</button>
 </template>

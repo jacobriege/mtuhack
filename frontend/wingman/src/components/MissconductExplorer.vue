@@ -73,7 +73,7 @@ function getFilterText() {
 function showtype(misconduct) {
   if(misconduct.type == "no_hardhat") {
     return "Missing Hardhat"
-  } else if(misconduct.type == "no_west") {
+  } else if(misconduct.type == "no_west" || misconduct.type == "no_safety_vest") {
     return "No Safety Vest"
   } else if(misconduct.type == "emergency") {
     return "Emergency lying down"

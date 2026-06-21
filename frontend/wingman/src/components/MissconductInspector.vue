@@ -9,12 +9,6 @@ import ws from '../js/websocketIntegration.js';
 import LiveButton from './LiveButton.vue';
 
 
-// Live view 
-const showLifeView = ref(false);
-function toggleLiveView() {
-  showLifeView.value = !showLifeView.value;
-}
-
 // global vairable missconducts
 const data = ref({
   updatecounter: 0,
@@ -59,13 +53,13 @@ function loadDetails(misconduct) {
 </script>
 
 <template>
-    <LiveButton :active="showLifeView" @click="toggleLiveView"></LiveButton>
+    <LiveButton ></LiveButton>
     <div class="complexTitle">
       <div class="title">WINGMAN</div>
       <div class="title2">dashboard</div> 
     </div>
     <Transition name="slideInOut">
-      <div v-if="showLifeView" class="splitview">
+      <div class="splitview">
         <div class="leftside">
           <Container1>
             <MissconductExplorer @loadDetails="loadDetails" />
@@ -82,7 +76,6 @@ function loadDetails(misconduct) {
           </Container1>
         </div>
       </div>
-      <div v-else class="empty2">Live view is not active</div>
     </Transition>
   
 
