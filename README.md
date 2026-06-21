@@ -55,10 +55,15 @@ See [Reporting Docs](reporting/README.md) for further Information.
 ## Frontend
 
 ```bash
-
+cd frontend/wingman
+npm install
+npm run dev
 ```
 
-See [Reporting Docs](reporting/README.md) for further Information.
+The frontend is available at `http://localhost:5173` by default and expects the backend API on `http://localhost:5000`.
+It also listens to live updates via websocket on `ws://localhost:5000/violations/ws`.
+
+See [Frontend Docs](frontend/README.md) for the frontend structure and [Wingman Frontend Docs](frontend/wingman/README.md) for project-specific details.
 
 ## Edge (Raspberry Pi)
 

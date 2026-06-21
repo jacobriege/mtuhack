@@ -2,7 +2,7 @@
 import Button1 from './button1.vue';
 import { defineProps } from 'vue';
 
-defineProps({
+const props = defineProps({
   violationId: {
     type: [String, Number],
     default: null,
@@ -13,7 +13,7 @@ defineProps({
   }
 })
 
-
+// Toggles flagged status for the selected violation.
 async function flagMisconduct() {
   const response = await fetch(`http://localhost:5000/violations/instance/flag?set=${!props.flagged}&violationId=${props.violationId}`)
   if (!response.ok) {

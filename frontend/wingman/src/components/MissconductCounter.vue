@@ -47,7 +47,7 @@ onMounted(async () => {
   })
 })
 
-//helper for color of pychart
+// Returns chart segment colors for non-zero misconduct categories.
 function getColor() {
     if(noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
         return ['#222222'];
@@ -65,7 +65,7 @@ function getColor() {
     return ret;
 }
 
-//helper for data of pychart
+// Returns pie chart values for non-zero misconduct categories.
 function getData() {
     if(noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
         return [1];
@@ -83,10 +83,10 @@ function getData() {
     return ret;
 }
 
-//helper for label of pychart
+// Builds labels that combine category names and their counts.
 function computeLabel() {
     if (noHardhatCount.value === 0 && noWesthatCount.value === 0 && emergencyCount.value === 0) {
-        return ['No missconducts'];
+        return ['No misconducts'];
     }
     var ret = [];
     if (noHardhatCount.value > 0) {
@@ -106,7 +106,7 @@ const noHardhatCount = ref(0);
 const noWesthatCount = ref(0);
 const emergencyCount = ref(0);
 
-// Gets the count of missconducts for the last 7 days from the backend when initally loading the component
+// Fetches misconduct counts used to render the summary pie chart.
 const fetchCount = async () => {
   const response = await fetch('http://localhost:5000/violations/count');
   const data = await response.json();

@@ -5,6 +5,7 @@ import Filter from './Filter.vue'
 
 const emit = defineEmits(['loadDetails'])
 
+// Emits the selected misconduct item to the parent inspector.
 const loadDetails = (misconduct) => {
   currentMisconduct.value = misconduct;
   console.log("Current misconduct set to", misconduct)
@@ -23,7 +24,7 @@ onMounted(async () => {
   await fetchMissconducts(activeFilters.value)
 })
 
-//function to fetch missconduct from server (filtered)
+// Fetches misconduct records from the date-filter endpoint.
 async function fetchMissconducts(filters) {
   const st = filters.startTime == "" ? 0 : Math.floor(new Date(filters.startTime) / 1000)
   const et = filters.endTime == "" ? Math.floor(new Date().getTime() / 1000) : Math.floor(new Date(filters.endTime) / 1000)
@@ -45,11 +46,13 @@ const sortByTime = (arr) => {
 };
 
 
+// Applies incoming filter values and refreshes the misconduct list.
 const onApplyFilters = (filters) => {
   activeFilters.value = filters
   fetchMissconducts(filters)
 }
 
+// Builds the filter summary text shown under the list title.
 function getFilterText() {
   // helper to prettyfy the filter display. If no filters are active, show "latest". If date filters are active, show the date range. If flagged filter is active, add "flagged" to the display.
   const prettyfydatetime = (datetime,replace="") => {
@@ -61,6 +64,7 @@ function getFilterText() {
     return f
   };
 
+  // Prepend "unread" when unread-only filtering is active.
   const readprefix = activeFilters.value.read ? "unread " : ""
   if(activeFilters.value.flagged == true) {
     return `${readprefix}${prettyfydatetime(activeFilters.value.startTime)} until ${prettyfydatetime(activeFilters.value.endTime,"now")} + flagged`
@@ -69,7 +73,7 @@ function getFilterText() {
   }
 
 }
-// display helper
+// Maps backend misconduct types to human-readable labels.
 function showtype(misconduct) {
   if(misconduct.type == "no_hardhat") {
     return "Missing Hardhat"
@@ -82,25 +86,25 @@ function showtype(misconduct) {
   }
 }
 
-//helper for date
+// Formats a misconduct timestamp into DD.MM.YYYY.
 function prettyDate(misconduct) {
   const d = new Date(misconduct.timestamp*1000);
   console.log(d)
   return `${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
 }
 
-//helper for time
+// Formats a misconduct timestamp into HH:MM.
 function prettyTime(misconduct) {
   const d = new Date(misconduct.timestamp*1000);
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-//watch for changes in data and set total count
+// Keeps the count title in sync with the loaded misconduct list.
 watch(missconducts, (newVal) => {
   newtotalcount.value = newVal.length
 })
 
-//watch for changes to update details view
+// Auto-selects the first item whenever the list changes.
 watch(missconducts, (newVal) => {
   missconducts.value = newVal
   if(newVal.length > 0) {

@@ -22,11 +22,12 @@ onBeforeMount(() => {
 const currentMisconduct = ref(null);
 const currentImageUrl = ref(null);
 
+// Starts and stops websocket updates for live event refreshes.
 onMounted(() => {ws.onmount(data);})
 onUnmounted(() => {ws.onunmount();})
 
 
-// helper fucntion for fetching instance details
+// Fetches the image URL for a selected violation instance.
 const fetchImageUrl = async (id) => {
   const response = await fetch("http://localhost:5000/violations/instance/image?violationId=" + id)
   if (!response.ok) {
@@ -36,7 +37,7 @@ const fetchImageUrl = async (id) => {
   currentImageUrl.value = "http://localhost:5000" + data.imageUrl;
 };
 
-// function called when something is selected in the misconduct explorer, emits event to load details
+// Updates selected misconduct details and loads its image.
 function loadDetails(misconduct) {
   if(misconduct == null) {
     currentMisconduct.value = null;
