@@ -113,7 +113,7 @@ const fetchCount = async () => {
   for (const item of data) {
     if (item.type === 'no_hardhat') {
       noHardhatCount.value = item.count;
-    } else if (item.type === 'no_west') {
+    } else if (item.type === 'no_west' || item.type === 'no_safety_vest') {
       noWesthatCount.value = item.count;
     } else if (item.type === 'emergency') {
       emergencyCount.value = item.count;
