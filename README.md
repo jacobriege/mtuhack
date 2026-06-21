@@ -55,7 +55,7 @@ See [Reporting Docs](reporting/README.md) for further Information.
 
 See [Reporting Docs](reporting/README.md) for further Information.
 
-### Edge (Raspberry Pi)
+## Edge (Raspberry Pi)
 
 ```bash
 python ppe_and_faces.py
@@ -63,8 +63,10 @@ python ppe_and_faces.py
 
 Once a Violation or Emergency has been detected, the script will transmit these events to the backend for further processing.
 
-
-See [Model Readme](yolo_stuff/README.ipynb) for further Information.
+## YOLO
+The main method regarding object detection is the YOLO object detection model. Pretrained models, datasets, tests, implementations, and more are explored in [YOLO testing](yolo_stuff/README.md) and [YOLO deployment](yolo_deployment/README.md).
+<br> <br>
+The YOLO models are then later used on a Raspberry Pi for the image processing.
 
 ## Further Resources
 
