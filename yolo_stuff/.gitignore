@@ -1,0 +1,12 @@
+# Python related stuff
+__pycache__
+
+# directories
+01_test_images
+01_result_images
+01_models
+02_datasets
+
+# files
+*.pt
+*.jpeg

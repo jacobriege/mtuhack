@@ -68,7 +68,10 @@ python ppe_and_faces.py
 
 Once a Violation or Emergency has been detected, the script will transmit these events to the backend for further processing.
 
+
+See [Model Readme](yolo_stuff/README.ipynb) for further Information.
+
 ## Further Resources
 
 - [Miro Board](https://miro.com/app/board/uXjVHDxGl7M=/?share_link_id=916344599581)
-- [Presentation]()
+- [Presentation](https://docs.google.com/presentation/d/1EXTWaQQKHl7VqOtEcM0qJFXPZFG0Aaewyf_v4C1NydU/edit?usp=sharing)
