@@ -64,7 +64,7 @@ python ppe_and_faces.py
 Once a Violation or Emergency has been detected, the script will transmit these events to the backend for further processing.
 
 ## YOLO
-The main method regarding object detection is the YOLO object detection model. Pretrained models, datasets, tests, implementations, and more are explored in [YOLO testing](yolo_stuff/README.md) and [YOLO deployment](yolo_deployment/README.md).
+The main method used for object detection is the YOLO object detection model. Pretrained models, datasets, tests, implementations, and more are explored in [YOLO testing](yolo_stuff/README.md) and [YOLO deployment](yolo_deployment/README.md).
 <br> <br>
 The YOLO models are then later used on a Raspberry Pi for the image processing.
 
