@@ -26,12 +26,8 @@ const clearImage = () => {
   imageUrl.value = null;
 };
 
-<<<<<<< HEAD
 // Loads misconduct image data from a URL and prepares it for display.
-const loadImage = async (id) => {
-=======
 const loadImage = async (url) => {
->>>>>>> refs/remotes/origin/main
   clearImage();
   if (url == null || url === '') {
     status.value = 'error';

@@ -19,12 +19,14 @@ This folder contains the frontend client project for the MTUHack system.
    - explorer (`MissconductExplorer.vue`) for list, filters, and selection,
    - counter (`MissconductCounter.vue`) for the summary pie chart,
    - details viewer (`MissconductDetailsViewer.vue`) for selected image preview.
+4. `src/js/websocketIntegration.js` listens on `ws://localhost:5000/violations/ws` and increments a shared update counter used to refresh UI data.
 
 ## API usage in current frontend
 
-- `GET /violations/unread`
-- `GET /violations/bydate?startdate=...&enddate=...&flagged=true`
+- `GET /violations/bydate?startdate=...&enddate=...&flagged=true[&unread=true]`
 - `GET /violations/count`
+- `GET /violations/instance/image?violationId=...`
+- `GET /violations/instance/flag?set=...&violationId=...`
 
 ## Notes
 

@@ -4,15 +4,24 @@ Brief predicted behavior of main frontend functions in `src/components`.
 
 ## Inspector component (`MissconductInspector.vue`)
 
+- `fetchImageUrl(id)`  
+  Fetches the selected violation image URL from the backend.
 - `loadDetails(misconduct)`  
   Stores the selected misconduct object and image URL for the details viewer.
+
+## Websocket module (`src/js/websocketIntegration.js`)
+
+- `onmount(data)`  
+  Connects to the websocket endpoint and increments `data.updatecounter` on each message.
+- `onunmount()`  
+  Closes the websocket connection when the component is destroyed.
 
 ## Explorer component (`MissconductExplorer.vue`)
 
 - `loadDetails(misconduct)`  
   Emits selected misconduct to the parent.
 - `fetchMissconducts(filters)`  
-  Loads misconducts from unread or date-filtered backend endpoints.
+  Loads misconducts from the date-filter endpoint and optional unread query filter.
 - `onApplyFilters(filters)`  
   Saves active filter values and refreshes the list.
 - `getFilterText()`  
@@ -39,7 +48,7 @@ Brief predicted behavior of main frontend functions in `src/components`.
 
 - `clearImage()`  
   Revokes old object URLs and clears image state.
-- `loadImage(id)`  
+- `loadImage(url)`  
   Fetches image data from the selected URL and updates display status.
 
 ## Counter component (`MissconductCounter.vue`)
@@ -50,13 +59,13 @@ Brief predicted behavior of main frontend functions in `src/components`.
   Produces numeric chart data from misconduct counts.
 - `computeLabel()`  
   Builds pie chart labels with category count text.
-- `initalCountFetch()`  
+- `fetchCount()`  
   Fetches backend misconduct counts and stores them in reactive values.
 
 ## `Flagbutton.vue`
 
 - `flagMisconduct()`  
-  Placeholder action that currently shows an alert.
+  Toggles the flagged state for the selected violation instance.
 
 ## Components without script functions
 

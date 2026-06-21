@@ -7,11 +7,8 @@ const emit = defineEmits(['loadDetails'])
 
 // Emits the selected misconduct item to the parent inspector.
 const loadDetails = (misconduct) => {
-<<<<<<< HEAD
-=======
   currentMisconduct.value = misconduct;
   console.log("Current misconduct set to", misconduct)
->>>>>>> refs/remotes/origin/main
   emit('loadDetails', misconduct)
 }
 const currentMisconduct = ref(null);
@@ -27,11 +24,7 @@ onMounted(async () => {
   await fetchMissconducts(activeFilters.value)
 })
 
-<<<<<<< HEAD
-// Fetches misconduct records using either unread or date-range endpoints.
-=======
-//function to fetch missconduct from server (filtered)
->>>>>>> refs/remotes/origin/main
+// Fetches misconduct records from the date-filter endpoint.
 async function fetchMissconducts(filters) {
   const st = filters.startTime == "" ? 0 : Math.floor(new Date(filters.startTime) / 1000)
   const et = filters.endTime == "" ? Math.floor(new Date().getTime() / 1000) : Math.floor(new Date(filters.endTime) / 1000)
@@ -71,9 +64,7 @@ function getFilterText() {
     return f
   };
 
-<<<<<<< HEAD
-// Maps backend misconduct types to human-readable labels.
-=======
+  // Prepend "unread" when unread-only filtering is active.
   const readprefix = activeFilters.value.read ? "unread " : ""
   if(activeFilters.value.flagged == true) {
     return `${readprefix}${prettyfydatetime(activeFilters.value.startTime)} until ${prettyfydatetime(activeFilters.value.endTime,"now")} + flagged`
@@ -82,8 +73,7 @@ function getFilterText() {
   }
 
 }
-// display helper
->>>>>>> refs/remotes/origin/main
+// Maps backend misconduct types to human-readable labels.
 function showtype(misconduct) {
   if(misconduct.type == "no_hardhat") {
     return "Missing Hardhat"
@@ -114,11 +104,7 @@ watch(missconducts, (newVal) => {
   newtotalcount.value = newVal.length
 })
 
-<<<<<<< HEAD
 // Auto-selects the first item whenever the list changes.
-=======
-//watch for changes to update details view
->>>>>>> refs/remotes/origin/main
 watch(missconducts, (newVal) => {
   missconducts.value = newVal
   if(newVal.length > 0) {
