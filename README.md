@@ -41,8 +41,13 @@ pip install -r requirements.txt
 ### Backend
 
 ```bash
+On Linux:
 cd reporting/backend
-.venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+.venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 5000
+
+On Windows:
+cd reporting/backend
+.\.venv\Scripts\uvicorn.exe main:app --reload --host 0.0.0.0 --port 5000
 ```
 
 See [Reporting Docs](reporting/README.md) for further Information.
@@ -59,7 +64,7 @@ The frontend is available at `http://localhost:5173` by default and expects the 
 
 See [Frontend Docs](frontend/README.md) for the frontend structure and [Wingman Frontend Docs](frontend/wingman/README.md) for project-specific details.
 
-### Edge (Raspberry Pi)
+## Edge (Raspberry Pi)
 
 ```bash
 python ppe_and_faces.py
@@ -67,7 +72,12 @@ python ppe_and_faces.py
 
 Once a Violation or Emergency has been detected, the script will transmit these events to the backend for further processing.
 
+## YOLO
+The main method used for object detection is the YOLO object detection model. Pretrained models, datasets, tests, implementations, and more are explored in [YOLO testing](yolo_stuff/README.md) and [YOLO deployment](yolo_deployment/README.md).
+<br> <br>
+The YOLO models are then later used on a Raspberry Pi for the image processing.
+
 ## Further Resources
 
 - [Miro Board](https://miro.com/app/board/uXjVHDxGl7M=/?share_link_id=916344599581)
-- [Presentation]()
+- [Presentation](https://docs.google.com/presentation/d/1EXTWaQQKHl7VqOtEcM0qJFXPZFG0Aaewyf_v4C1NydU/edit?usp=sharing)

@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 # Wingman Frontend (Vue + Vite)
+=======
+# wingman
+
+# instruction on running
+cd ./frontend/wingman 
+"npm run dev"
+>>>>>>> refs/remotes/origin/main
 
 Frontend dashboard for viewing PPE violations and emergency detections.
 

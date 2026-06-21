@@ -163,17 +163,19 @@ def get_unread():
 
 
 @router.get("/bydate", response_model=list[ViolationSummary])
-def get_by_date(startdate: int = Query(...), enddate: int = Query(...), flagged: bool = Query(None)):
+def get_by_date(startdate: int = Query(...), enddate: int = Query(...), flagged: bool = Query(None), read: bool = Query(None)):
     db = get_db()
-    if flagged is None:
-        rows = db.execute(
-            "SELECT * FROM violations WHERE timestamp BETWEEN ? AND ?", (startdate, enddate)
-        ).fetchall()
-    else:
-        rows = db.execute(
-            "SELECT * FROM violations WHERE timestamp BETWEEN ? AND ? AND flagged=?",
-            (startdate, enddate, int(flagged)),
-        ).fetchall()
+    filters = ["timestamp BETWEEN ? AND ?"]
+    params: list = [startdate, enddate]
+    if flagged is not None:
+        filters.append("flagged=?")
+        params.append(int(flagged))
+    if read is not None:
+        filters.append("read=?")
+        params.append(int(read))
+    rows = db.execute(
+        f"SELECT * FROM violations WHERE {' AND '.join(filters)}", params
+    ).fetchall()
     db.close()
     return [_row_to_summary(r) for r in rows]
 

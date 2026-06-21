@@ -26,7 +26,7 @@ app.mount("/violation_images", StaticFiles(directory="violation_images"), name="
 app.include_router(violations_router)
 
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5173","null"
 ]
 
 app.add_middleware(

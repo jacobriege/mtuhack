@@ -12,5 +12,5 @@ payload = {
     "headbox": [20, 10, 80, 50],
 }
 
-resp = requests.post("http://localhost:8000/violations", json=payload)
+resp = requests.post("http://localhost:5000/violations", json=payload)
 print(resp.status_code, resp.json())

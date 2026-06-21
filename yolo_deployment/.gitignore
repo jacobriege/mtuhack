@@ -1,0 +1,6 @@
+# ignore files
+*.pt*
+*.mp4
+
+# python stuff
+__pycache__
