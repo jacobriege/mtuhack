@@ -2,18 +2,11 @@
 __pycache__
 
 # directories
-test_images
-result_images
-models
+01_test_images
+01_result_images
+01_models
+02_datasets
 
 # files
 *.pt
 *.jpeg
-
-# datasets
-construction-ppe
-construction_ppe_filtered
-construction_site_safety_dataset
-css_dataset_filtered
-head_detection_*
-combined_data*
